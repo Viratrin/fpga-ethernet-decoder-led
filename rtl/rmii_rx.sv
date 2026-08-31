@@ -68,7 +68,7 @@ module rmii_rx (
                     is_first_byte <= 1'b0;
                 end
 
-                phase <= (phase == 2'd3) ? 2'd0 : phase + 2'd1;
+                phase <= phase + 2'd1;
             end
         end else begin
             sfd_found     <= 1'b0;
