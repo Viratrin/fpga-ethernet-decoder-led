@@ -52,7 +52,7 @@ the board through a switch/router.
 All stages run off the 50 MHz RMII reference clock (20 ns/cycle). Per-stage
 delay from a byte arriving on the wire to it reaching the next stage:
 
-| Stage | Latency | Why |
+| Stage | Latency | Explanation |
 |---|---|---|
 | `rmii_rx` | 1 cycle (20 ns) | releases each byte as soon as one more dibit proves it wasn't the frame's last byte |
 | `fcs_strip` | 16 cycles (320 ns) | 4-byte lookahead because we can't know a byte isn't part of the trailing FCS until 4 more bytes arrive |
