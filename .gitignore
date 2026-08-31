@@ -1,0 +1,9 @@
+build/
+*.vcd
+*.fst
+*.json
+*.asc
+*.bin
+*.log
+__pycache__/
+*.pyc
