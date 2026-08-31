@@ -3,8 +3,6 @@ RTL   := rtl/rmii_rx.sv rtl/fcs_strip.sv rtl/eth_rx.sv rtl/ipv4_rx.sv rtl/udp_rx
 PCF   := constraints/upduino.pcf
 BUILD := build
 
-.PHONY: bitstream flash clean
-
 bitstream: $(BUILD)/$(TOP).bin
 
 $(BUILD)/$(TOP).json: $(RTL)
