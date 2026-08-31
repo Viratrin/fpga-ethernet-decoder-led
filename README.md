@@ -46,3 +46,24 @@ python scripts/send_led_command.py green --send-iface Ethernet
 interface name. The packet is sent to a fixed multicast address/port 
 (`239.1.2.3:5000`) with a broadcast destination MAC, so it reaches 
 the board through a switch/router.
+
+## Latency
+
+All stages run off the 50 MHz RMII reference clock (20 ns/cycle). Per-stage
+delay from a byte arriving on the wire to it reaching the next stage:
+
+| Stage | Latency | Why |
+|---|---|---|
+| `rmii_rx` | 1 cycle (20 ns) | releases each byte as soon as one more dibit proves it wasn't the frame's last byte |
+| `fcs_strip` | 16 cycles (320 ns) | 4-byte lookahead - can't know a byte isn't part of the trailing FCS until 4 more bytes arrive |
+| `eth_rx` | 1 cycle (20 ns) | single register stage, no lookahead needed |
+| `ipv4_rx` | 1 cycle (20 ns) | same |
+| `udp_rx` | 1 cycle (20 ns) | same |
+| `led_command` | 1 cycle (20 ns) | registers the color decision on the payload's first byte |
+| **Total** | **21 cycles = 420 ns** | from the command byte hitting the wire to the LED color register updating |
+
+`fcs_strip`'s 4-byte lookahead dominates: it can't forward a byte until a
+5th byte arrives to prove it isn't part of the FCS trailer, so it alone
+accounts for 16 of the 21 total cycles. Every other stage is a plain
+single-cycle register with no lookahead, since each only needs fields
+already latched earlier in the same frame, not bytes still to come.
